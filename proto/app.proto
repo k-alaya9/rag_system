@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package app;
+
+service VectorStoreService {
+  rpc StoreDocuments (StoreDocumentsRequest) returns (StoreDocumentsResponse);
+  rpc DeleteDocument (DeleteDocumentRequest) returns (DeleteDocumentResponse);
+  rpc FindSimilarDocuments (FindSimilarDocumentsRequest) returns (FindSimilarDocumentsResponse);
+}
+
+message Document {
+  string id = 1;
+  string document = 2;
+  string metadata = 3;
+}
+
+message StoreDocumentsRequest {
+  repeated Document documents = 1;
+}
+
+message StoreDocumentsResponse {
+  string message = 1;
+}
+
+message DeleteDocumentRequest {
+  string id = 1;
+}
+
+message DeleteDocumentResponse {
+  string message = 1;
+}
+
+message FindSimilarDocumentsRequest {
+  string query = 1;
+}
+
+message FindSimilarDocumentsResponse {
+  repeated Document documents = 1;
+}
+
