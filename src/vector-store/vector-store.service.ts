@@ -4,29 +4,29 @@ import weaviate, { ApiKey, WeaviateClient } from 'weaviate-ts-client';
 require('dotenv').config();
 @Injectable()
 export class VectorStoreService {
-    private client: WeaviateClient;
-    private embeddings:OpenAIEmbeddings;
+  private client: WeaviateClient;
+  private embeddings: OpenAIEmbeddings;
 
   constructor() {
     const apiKey = new ApiKey(process.env.WEAVIATE_API_KEY!);
     this.client = weaviate.client({
-        scheme: 'https',
-        host: process.env.WEAVIATE_HOST!,
-        apiKey:apiKey
+      scheme: 'https',
+      host: process.env.WEAVIATE_HOST!,
+      apiKey: apiKey
     });
     this.embeddings = new OpenAIEmbeddings({ apiKey: process.env.OPENAI_API_KEY });
   }
   async createSchema() {
     const schema = {
       class: 'Document',
-      vectorizer: 'none', 
+      vectorizer: 'none',
       properties: [
         { name: 'id_docs', dataType: ['string'], indexInverted: true },
         { name: 'text', dataType: ['text'], indexInverted: true },
         { name: 'metadata', dataType: ['string'], indexInverted: true },
       ],
     };
-  
+
     try {
       await this.client.schema.classCreator().withClass(schema).do();
       return { message: 'Schema created successfully' };
@@ -35,7 +35,7 @@ export class VectorStoreService {
       return { message: 'Schema creation failed', error };
     }
   }
-  
+
   async storeDocuments(docs: { id: string; document: string; metadata: any }[]) {
     await this.createSchema();
     for (const doc of docs) {
@@ -67,5 +67,5 @@ export class VectorStoreService {
     console.log(result.data.Get.Document);
     return result.data.Get.Document;
   }
-  
+
 }
